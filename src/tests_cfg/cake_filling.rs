@@ -51,6 +51,13 @@ impl ColumnTrait for Column {
             Self::FillingId => ColumnType::Integer.def(),
         }
     }
+
+    fn null_value(&self) -> Value {
+        match self {
+            Self::CakeId => Value::from(None::<i32>),
+            Self::FillingId => Value::from(None::<i32>),
+        }
+    }
 }
 
 impl RelationTrait for Relation {

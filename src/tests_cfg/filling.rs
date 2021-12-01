@@ -62,6 +62,14 @@ impl ColumnTrait for Column {
             Self::VendorId => ColumnType::Integer.def().nullable(),
         }
     }
+
+    fn null_value(&self) -> Value {
+        match self {
+            Self::Id => Value::from(None::<i32>),
+            Self::Name => Value::from(None::<String>),
+            Self::VendorId => Value::from(None::<i32>),
+        }
+    }
 }
 
 impl RelationTrait for Relation {

@@ -49,6 +49,13 @@ impl ColumnTrait for Column {
             Self::Name => ColumnType::String(None).def(),
         }
     }
+
+    fn null_value(&self) -> Value {
+        match self {
+            Self::Id => Value::from(None::<i32>),
+            Self::Name => Value::from(None::<String>),
+        }
+    }
 }
 
 impl RelationTrait for Relation {
