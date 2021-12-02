@@ -121,6 +121,14 @@ pub fn expand_derive_active_model(ident: Ident, data: Data) -> syn::Result<Token
                 }
             }
 
+            fn set_from_json(&mut self, c: <Self::Entity as EntityTrait>::Column, json: sea_orm::prelude::Json) -> Result<(), FromJsonErr>{
+                match c {
+                    #(<Self::Entity as EntityTrait>::Column::#name => self.#field.set_from_json(json)?,)*
+                    _ => panic!("This ActiveModel does not have this field"),
+                }
+                Ok(())
+            }
+
             fn unset(&mut self, c: <Self::Entity as EntityTrait>::Column) {
                 match c {
                     #(<Self::Entity as EntityTrait>::Column::#name => self.#field = sea_orm::ActiveValue::unset(),)*

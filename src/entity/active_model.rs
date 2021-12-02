@@ -93,6 +93,13 @@ pub trait ActiveModelTrait: Clone + Debug {
     /// Set the Value into an ActiveModel
     fn set(&mut self, c: <Self::Entity as EntityTrait>::Column, v: Value);
 
+    /// Set the Value from json
+    fn set_from_json(
+        &mut self,
+        c: <Self::Entity as EntityTrait>::Column,
+        json: crate::prelude::Json,
+    ) -> Result<(), FromJsonErr>;
+
     /// Set the state of an [ActiveValue] to the Unset state
     fn unset(&mut self, c: <Self::Entity as EntityTrait>::Column);
 
@@ -683,6 +690,47 @@ where
             ActiveValueState::Set => ActiveValue::set(self.into_value().unwrap()),
             ActiveValueState::Unchanged => ActiveValue::unchanged(self.into_value().unwrap()),
             ActiveValueState::Unset => ActiveValue::unset(),
+        }
+    }
+}
+
+/// A Trait for ActiveValue that can be set from json
+pub trait SetFromJson {
+    /// Method to set value from json
+    fn set_from_json(&mut self, json: crate::prelude::Json) -> Result<(), FromJsonErr>;
+
+    /// Method to make a new value from json
+    fn from_json(json: crate::prelude::Json) -> Result<Self, FromJsonErr>
+    where
+        Self: Sized;
+}
+
+#[cfg(feature = "with-json")]
+#[cfg_attr(docsrs, doc(cfg(feature = "with-json")))]
+mod with_json {
+    use super::*;
+    use serde::Deserialize;
+
+    impl<T> SetFromJson for ActiveValue<T>
+    where
+        sea_query::Value: From<T>,
+        T: for<'de> Deserialize<'de>,
+    {
+        /// Set the value of an [ActiveValue] from json and also set its state to `ActiveValueState::Set`
+        fn set_from_json(&mut self, json: crate::prelude::Json) -> Result<(), FromJsonErr> {
+            let value = serde_json::from_value(json).map_err(|err| FromJsonErr(err.to_string()))?;
+            self.value = Some(value);
+            self.state = ActiveValueState::Set;
+            Ok(())
+        }
+
+        /// Make a new [ActiveValue] from json and also set its state to `ActiveValueState::Set`
+        fn from_json(json: crate::prelude::Json) -> Result<Self, FromJsonErr> {
+            let value = serde_json::from_value(json).map_err(|err| FromJsonErr(err.to_string()))?;
+            Ok(Self {
+                value: Some(value),
+                state: ActiveValueState::Set,
+            })
         }
     }
 }

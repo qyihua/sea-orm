@@ -41,3 +41,15 @@ impl std::fmt::Display for ColumnFromStrErr {
         write!(f, "{}", self.0.as_str())
     }
 }
+
+/// An error from a failed convert operation when trying to convert from json
+#[derive(Debug, Clone)]
+pub struct FromJsonErr(pub String);
+
+impl std::error::Error for FromJsonErr {}
+
+impl std::fmt::Display for FromJsonErr {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}", self.0.as_str())
+    }
+}
