@@ -1,7 +1,9 @@
+use super::sea_orm_active_enums::*;
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
-#[sea_orm(schema_name = "public", table_name = "active_enum")]
+#[cfg_attr(feature = "sqlx-postgres", sea_orm(schema_name = "public"))]
+#[sea_orm(table_name = "active_enum")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
@@ -11,33 +13,27 @@ pub struct Model {
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {}
+pub enum Relation {
+    #[sea_orm(has_many = "super::active_enum_child::Entity")]
+    ActiveEnumChild,
+}
+
+impl Related<super::active_enum_child::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::ActiveEnumChild.def()
+    }
+}
+
+pub struct ActiveEnumChildLink;
+
+impl Linked for ActiveEnumChildLink {
+    type FromEntity = Entity;
+
+    type ToEntity = super::active_enum_child::Entity;
+
+    fn link(&self) -> Vec<RelationDef> {
+        vec![Relation::ActiveEnumChild.def()]
+    }
+}
 
 impl ActiveModelBehavior for ActiveModel {}
-
-#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum)]
-#[sea_orm(rs_type = "String", db_type = "String(Some(1))")]
-pub enum Category {
-    #[sea_orm(string_value = "B")]
-    Big,
-    #[sea_orm(string_value = "S")]
-    Small,
-}
-
-#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum)]
-#[sea_orm(rs_type = "i32", db_type = "Integer")]
-pub enum Color {
-    #[sea_orm(num_value = 0)]
-    Black,
-    #[sea_orm(num_value = 1)]
-    White,
-}
-
-#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum)]
-#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "tea")]
-pub enum Tea {
-    #[sea_orm(string_value = "EverydayTea")]
-    EverydayTea,
-    #[sea_orm(string_value = "BreakfastTea")]
-    BreakfastTea,
-}
