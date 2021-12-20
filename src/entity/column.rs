@@ -139,9 +139,6 @@ pub trait ColumnTrait: IdenStatic + Iterable + FromStr {
     /// Define a column for an Entity
     fn def(&self) -> ColumnDef;
 
-    /// Return null value
-    fn null_value(&self) -> Value;
-
     /// Get the name of the entity the column belongs to
     fn entity_name(&self) -> DynIden {
         SeaRc::new(Self::EntityName::default()) as DynIden
@@ -615,15 +612,6 @@ mod tests {
                         Column::Three => ColumnType::Integer.def(),
                     }
                 }
-
-                fn null_value(&self) -> Value {
-                    match self {
-                        Column::Id => Value::from(None::<i32>),
-                        Column::One => Value::from(None::<i32>),
-                        Column::Two => Value::from(None::<i32>),
-                        Column::Three => Value::from(None::<i32>),
-                    }
-                }
             }
 
             #[derive(Copy, Clone, Debug, EnumIter, DerivePrimaryKey)]
@@ -727,14 +715,6 @@ mod tests {
                         Column::One1 => ColumnType::Integer.def(),
                         Column::Two => ColumnType::Integer.def(),
                         Column::Three3 => ColumnType::Integer.def(),
-                    }
-                }
-                fn null_value(&self) -> Value {
-                    match self {
-                        Column::Id => Value::from(None::<i32>),
-                        Column::One1 => Value::from(None::<i32>),
-                        Column::Two => Value::from(None::<i32>),
-                        Column::Three3 => Value::from(None::<i32>),
                     }
                 }
             }
@@ -846,14 +826,6 @@ mod tests {
                         Column::One1 => ColumnType::Integer.def(),
                         Column::Two => ColumnType::Integer.def(),
                         Column::Three3 => ColumnType::Integer.def(),
-                    }
-                }
-                fn null_value(&self) -> Value {
-                    match self {
-                        Column::IdentityCol => Value::from(None::<i32>),
-                        Column::One1 => Value::from(None::<i32>),
-                        Column::Two => Value::from(None::<i32>),
-                        Column::Three3 => Value::from(None::<i32>),
                     }
                 }
             }

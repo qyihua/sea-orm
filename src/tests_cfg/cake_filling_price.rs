@@ -60,14 +60,6 @@ impl ColumnTrait for Column {
             Self::Price => ColumnType::Decimal(None).def(),
         }
     }
-
-    fn null_value(&self) -> Value {
-        match self {
-            Self::CakeId => Value::from(None::<i32>),
-            Self::FillingId => Value::from(None::<i32>),
-            Self::Price => Value::from(None::<Decimal>),
-        }
-    }
 }
 
 impl RelationTrait for Relation {

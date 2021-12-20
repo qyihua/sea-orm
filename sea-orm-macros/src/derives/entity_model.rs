@@ -58,7 +58,6 @@ pub fn expand_derive_entity_model(data: Data, attrs: Vec<Attribute>) -> syn::Res
     let mut primary_keys: Punctuated<_, Comma> = Punctuated::new();
     let mut primary_key_types: Punctuated<_, Comma> = Punctuated::new();
     let mut auto_increment = true;
-    let mut null_values: Punctuated<_, Comma> = Punctuated::new();
     if let Data::Struct(item_struct) = data {
         if let Fields::Named(fields) = item_struct.fields {
             for field in fields.named {
@@ -267,21 +266,6 @@ pub fn expand_derive_entity_model(data: Data, attrs: Vec<Attribute>) -> syn::Res
                         match_row = quote! { #match_row.default_expr(#default_expr) };
                     }
                     columns_trait.push(match_row);
-                    {
-                        let field_type = &field.ty;
-                        let temp = quote! { #field_type }
-                            .to_string() //E.g.: "Option < String >"
-                            .replace(" ", "");
-                        let temp = if temp.starts_with("Option<") {
-                            &temp[7..(temp.len() - 1)]
-                        } else {
-                            temp.as_str()
-                        };
-                        let temp: TokenStream =
-                            syn::LitStr::new(temp, Span::call_site()).parse().unwrap();
-                        let null_value = quote! { Self::#field_name => sea_orm::sea_query::Value::from(None::<#temp>) };
-                        null_values.push(null_value);
-                    }
                 }
             }
         }
@@ -320,7 +304,6 @@ pub fn expand_derive_entity_model(data: Data, attrs: Vec<Attribute>) -> syn::Res
             #columns_enum
         }
 
-
         #[automatically_derived]
         impl sea_orm::prelude::ColumnTrait for Column {
             type EntityName = Entity;
@@ -328,12 +311,6 @@ pub fn expand_derive_entity_model(data: Data, attrs: Vec<Attribute>) -> syn::Res
             fn def(&self) -> sea_orm::prelude::ColumnDef {
                 match self {
                     #columns_trait
-                }
-            }
-
-            fn null_value(&self) -> sea_orm::sea_query::Value {
-                match self{
-                    #null_values
                 }
             }
         }
