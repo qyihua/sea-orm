@@ -145,7 +145,31 @@ pub trait ActiveModelTrait: Clone + Debug {
                 let s3 = next!();
                 Some(ValueTuple::Three(s1, s2, s3))
             }
-            _ => panic!("The arity cannot be larger than 3"),
+            4 => {
+                let s1 = next!();
+                let s2 = next!();
+                let s3 = next!();
+                let s4 = next!();
+                Some(ValueTuple::Four(s1, s2, s3, s4))
+            }
+            5 => {
+                let s1 = next!();
+                let s2 = next!();
+                let s3 = next!();
+                let s4 = next!();
+                let s5 = next!();
+                Some(ValueTuple::Five(s1, s2, s3, s4, s5))
+            }
+            6 => {
+                let s1 = next!();
+                let s2 = next!();
+                let s3 = next!();
+                let s4 = next!();
+                let s5 = next!();
+                let s6 = next!();
+                Some(ValueTuple::Six(s1, s2, s3, s4, s5, s6))
+            }
+            _ => panic!("The arity cannot be larger than 6"),
         }
     }
 
@@ -259,7 +283,7 @@ pub trait ActiveModelTrait: Clone + Debug {
     where
         <Self::Entity as EntityTrait>::Model: IntoActiveModel<Self>,
         Self: ActiveModelBehavior + 'a,
-        C: ConnectionTrait<'a>,
+        C: ConnectionTrait,
     {
         let am = ActiveModelBehavior::before_save(self, true)?;
         let model = <Self::Entity as EntityTrait>::insert(am)
@@ -381,35 +405,35 @@ pub trait ActiveModelTrait: Clone + Debug {
     where
         <Self::Entity as EntityTrait>::Model: IntoActiveModel<Self>,
         Self: ActiveModelBehavior + 'a,
-        C: ConnectionTrait<'a>,
+        C: ConnectionTrait,
     {
         let am = ActiveModelBehavior::before_save(self, false)?;
         let model: <Self::Entity as EntityTrait>::Model = Self::Entity::update(am).exec(db).await?;
         Self::after_save(model, false)
     }
 
-    /// Insert the model if primary key is not_set, update otherwise.
+    /// Insert the model if primary key is `NotSet`, update otherwise.
     /// Only works if the entity has auto increment primary key.
-    async fn save<'a, C>(self, db: &'a C) -> Result<<Self::Entity as EntityTrait>::Model, DbErr>
+    async fn save<'a, C>(self, db: &'a C) -> Result<Self, DbErr>
     where
         <Self::Entity as EntityTrait>::Model: IntoActiveModel<Self>,
         Self: ActiveModelBehavior + 'a,
-        C: ConnectionTrait<'a>,
+        C: ConnectionTrait,
     {
-        let am = self;
         let mut is_update = true;
         for key in <Self::Entity as EntityTrait>::PrimaryKey::iter() {
             let col = key.into_column();
-            if am.is_not_set(col) {
+            if self.is_not_set(col) {
                 is_update = false;
                 break;
             }
         }
-        if !is_update {
-            am.insert(db).await
+        let res = if !is_update {
+            self.insert(db).await
         } else {
-            am.update(db).await
-        }
+            self.update(db).await
+        }?;
+        Ok(res.into_active_model())
     }
 
     /// Delete an active model by its primary key
@@ -458,7 +482,7 @@ pub trait ActiveModelTrait: Clone + Debug {
     async fn delete<'a, C>(self, db: &'a C) -> Result<DeleteResult, DbErr>
     where
         Self: ActiveModelBehavior + 'a,
-        C: ConnectionTrait<'a>,
+        C: ConnectionTrait,
     {
         let am = ActiveModelBehavior::before_delete(self)?;
         let am_clone = am.clone();
@@ -614,6 +638,14 @@ impl_into_active_value!(crate::prelude::DateTime, Set);
 #[cfg(feature = "with-chrono")]
 #[cfg_attr(docsrs, doc(cfg(feature = "with-chrono")))]
 impl_into_active_value!(crate::prelude::DateTimeWithTimeZone, Set);
+
+#[cfg(feature = "with-chrono")]
+#[cfg_attr(docsrs, doc(cfg(feature = "with-chrono")))]
+impl_into_active_value!(crate::prelude::DateTimeUtc, Set);
+
+#[cfg(feature = "with-chrono")]
+#[cfg_attr(docsrs, doc(cfg(feature = "with-chrono")))]
+impl_into_active_value!(crate::prelude::DateTimeLocal, Set);
 
 #[cfg(feature = "with-rust_decimal")]
 #[cfg_attr(docsrs, doc(cfg(feature = "with-rust_decimal")))]

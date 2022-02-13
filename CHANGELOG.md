@@ -5,6 +5,72 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.6.0 - 2022-02-07
+
+### New Features
+* Migration Support by @billy1624 in https://github.com/SeaQL/sea-orm/pull/335
+* Support `DateTime<Utc>` & `DateTime<Local>` by @billy1624 in https://github.com/SeaQL/sea-orm/pull/489
+* Add `max_lifetime` connection option by @billy1624 in https://github.com/SeaQL/sea-orm/pull/493
+
+### Enhancements
+* Model with Generics by @billy1624 in https://github.com/SeaQL/sea-orm/pull/400
+* Add Poem example by @sunli829 in https://github.com/SeaQL/sea-orm/pull/446
+* Codegen `column_name` proc_macro attribute by @billy1624 in https://github.com/SeaQL/sea-orm/pull/433
+* Easy joins with MockDatabase #447 by @cemoktra in https://github.com/SeaQL/sea-orm/pull/455
+
+### Bug Fixes
+* CLI allow generate entity with url without password by @billy1624 in https://github.com/SeaQL/sea-orm/pull/436
+* Support up to 6-ary composite primary key by @billy1624 in https://github.com/SeaQL/sea-orm/pull/423
+* Fix FromQueryResult when Result is redefined by @tasn in https://github.com/SeaQL/sea-orm/pull/495
+* Remove `r#` prefix when deriving `FromQueryResult` by @smrtrfszm in https://github.com/SeaQL/sea-orm/pull/494
+
+### Breaking Changes
+* Name conflict of foreign key constraints when two entities have more than one foreign keys by @billy1624 in https://github.com/SeaQL/sea-orm/pull/417
+
+### Fixed Issues
+* Is it possible to have 4 values Composite Key? https://github.com/SeaQL/sea-orm/issues/352
+* Support `DateTime<Utc>` & `DateTime<Local>` https://github.com/SeaQL/sea-orm/issues/381
+* Codegen `column_name` proc_macro attribute if column name isn't in snake case https://github.com/SeaQL/sea-orm/issues/395
+* Model with Generics https://github.com/SeaQL/sea-orm/issues/402
+* Foreign key constraint collision when multiple keys exist between the same two tables https://github.com/SeaQL/sea-orm/issues/405
+* sea-orm-cli passwordless database user causes "No password was found in the database url" error https://github.com/SeaQL/sea-orm/issues/435
+* Testing joins with MockDatabase https://github.com/SeaQL/sea-orm/issues/447
+* Surface max_lifetime connection option https://github.com/SeaQL/sea-orm/issues/475
+
+**Full Changelog**: https://github.com/SeaQL/sea-orm/compare/0.5.0...0.6.0
+
+## 0.5.0 - 2022-01-01
+
+### Fixed Issues
+* Why insert, update, etc return a ActiveModel instead of Model? https://github.com/SeaQL/sea-orm/issues/289
+* Rework `ActiveValue` https://github.com/SeaQL/sea-orm/issues/321
+* Some missing ActiveEnum utilities https://github.com/SeaQL/sea-orm/issues/338
+
+### Merged PRs
+* First metric and tracing implementation by @nappa85 in https://github.com/SeaQL/sea-orm/pull/373
+* Update sea-orm to depends on SeaQL/sea-query#202 by @billy1624 in https://github.com/SeaQL/sea-orm/pull/370
+* Codegen ActiveEnum & Create Enum From ActiveEnum by @billy1624 in https://github.com/SeaQL/sea-orm/pull/348
+* Axum example: update to Axum v0.4.2 by @ttys3 in https://github.com/SeaQL/sea-orm/pull/383
+* Fix rocket version by @Gabriel-Paulucci in https://github.com/SeaQL/sea-orm/pull/384
+* Insert & Update Return `Model` by @billy1624 in https://github.com/SeaQL/sea-orm/pull/339
+* Rework `ActiveValue` by @billy1624 in https://github.com/SeaQL/sea-orm/pull/340
+* Add wrapper method `ModelTrait::delete` by @billy1624 in https://github.com/SeaQL/sea-orm/pull/396
+* Add docker create script for contributors to setup databases locally by @billy1624 in https://github.com/SeaQL/sea-orm/pull/378
+* Log with tracing-subscriber by @billy1624 in https://github.com/SeaQL/sea-orm/pull/399
+* Codegen SQLite by @billy1624 in https://github.com/SeaQL/sea-orm/pull/386
+* PR without clippy warmings in file changed tab by @billy1624 in https://github.com/SeaQL/sea-orm/pull/401
+* Rename `sea-strum` lib back to `strum` by @billy1624 in https://github.com/SeaQL/sea-orm/pull/361
+
+### Breaking Changes
+* `ActiveModel::insert` and `ActiveModel::update` return `Model` instead of `ActiveModel`
+* Method `ActiveModelBehavior::after_save` takes `Model` as input instead of `ActiveModel`
+* Rename method `sea_orm::unchanged_active_value_not_intended_for_public_use` to `sea_orm::Unchanged`
+* Rename method `ActiveValue::unset` to `ActiveValue::not_set`
+* Rename method `ActiveValue::is_unset` to `ActiveValue::is_not_set`
+* `PartialEq` of `ActiveValue` will also check the equality of state instead of just checking the equality of value
+
+**Full Changelog**: https://github.com/SeaQL/sea-orm/compare/0.4.2...0.5.0
+
 ## 0.4.2 - 2021-12-12
 
 ### Fixed Issues

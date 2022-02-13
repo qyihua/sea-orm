@@ -1,15 +1,16 @@
 mod flash;
-mod post;
-mod setup;
 
 use axum::{
     extract::{Extension, Form, Path, Query},
     http::StatusCode,
     response::Html,
-    routing::{get, post, get_service},
+    routing::{get, get_service, post},
     AddExtensionLayer, Router, Server,
 };
+use entity::post;
+use entity::sea_orm;
 use flash::{get_flash_cookie, post_response, PostResponse};
+use migration::{Migrator, MigratorTrait};
 use post::Entity as Post;
 use sea_orm::{prelude::*, Database, QueryOrder, Set};
 use serde::{Deserialize, Serialize};
@@ -23,7 +24,7 @@ use tower_http::services::ServeDir;
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     env::set_var("RUST_LOG", "debug");
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     dotenv::dotenv().ok();
     let db_url = env::var("DATABASE_URL").expect("DATABASE_URL is not set in .env file");
@@ -34,7 +35,7 @@ async fn main() -> anyhow::Result<()> {
     let conn = Database::connect(db_url)
         .await
         .expect("Database connection failed");
-    let _ = setup::create_post_table(&conn).await;
+    Migrator::up(&conn, None).await.unwrap();
     let templates = Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*"))
         .expect("Tera initialization failed");
     // let state = AppState { templates, conn };

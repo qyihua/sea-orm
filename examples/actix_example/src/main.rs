@@ -2,16 +2,17 @@ use actix_files as fs;
 use actix_web::{
     error, get, middleware, post, web, App, Error, HttpRequest, HttpResponse, HttpServer, Result,
 };
+
+use entity::post;
+use entity::post::Entity as Post;
+use entity::sea_orm;
 use listenfd::ListenFd;
+use migration::{Migrator, MigratorTrait};
 use sea_orm::DatabaseConnection;
 use sea_orm::{entity::*, query::*};
 use serde::{Deserialize, Serialize};
 use std::env;
 use tera::Tera;
-
-mod post;
-pub use post::Entity as Post;
-mod setup;
 
 const DEFAULT_POSTS_PER_PAGE: usize = 5;
 
@@ -181,7 +182,7 @@ async fn delete(
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "debug");
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     // get env vars
     dotenv::dotenv().ok();
@@ -192,7 +193,7 @@ async fn main() -> std::io::Result<()> {
 
     // create post table if not exists
     let conn = sea_orm::Database::connect(&db_url).await.unwrap();
-    let _ = setup::create_post_table(&conn).await;
+    Migrator::up(&conn, None).await.unwrap();
     let templates = Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*")).unwrap();
     let state = AppState { templates, conn };
 
