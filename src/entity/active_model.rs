@@ -97,7 +97,7 @@ pub trait ActiveModelTrait: Clone + Debug {
     fn set(&mut self, c: <Self::Entity as EntityTrait>::Column, v: Value);
 
     /// Set the Value from json
-    fn set_from_json(
+    fn set_col_from_json(
         &mut self,
         c: <Self::Entity as EntityTrait>::Column,
         json: crate::prelude::Json,
