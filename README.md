@@ -18,6 +18,9 @@
 
 ## Getting Started
 
+[![GitHub stars](https://img.shields.io/github/stars/SeaQL/sea-orm.svg?style=social&label=Star&maxAge=1)](https://github.com/SeaQL/sea-orm/stargazers/)
+If you like what we do, consider starring, commenting, sharing and contributing!
+
 [![Discord](https://img.shields.io/discord/873880840487206962?label=Discord)](https://discord.com/invite/uCPdDXzbdv)
 Join our Discord server to chat with others in the SeaQL community!
 
@@ -26,6 +29,7 @@ Join our Discord server to chat with others in the SeaQL community!
 + [Rocket Example](https://github.com/SeaQL/sea-orm/tree/master/examples/rocket_example)
 + [Actix Example](https://github.com/SeaQL/sea-orm/tree/master/examples/actix_example)
 + [Axum Example](https://github.com/SeaQL/sea-orm/tree/master/examples/axum_example)
++ [Axum-GraphQL Example](https://github.com/SeaQL/sea-orm/tree/master/examples/axum-graphql_example)
 + [Poem Example](https://github.com/SeaQL/sea-orm/tree/master/examples/poem_example)
 
 ## Features
@@ -179,6 +183,10 @@ fruit::Entity::delete_many()
 1. [Architecture](https://github.com/SeaQL/sea-orm/tree/master/ARCHITECTURE.md)
 1. [Release Model](https://www.sea-ql.org/SeaORM/blog/2021-08-30-release-model)
 1. [Change Log](https://github.com/SeaQL/sea-orm/tree/master/CHANGELOG.md)
+
+## Who's using SeaORM?
+
+[Built with SeaORM](https://github.com/SeaQL/sea-orm/blob/master/COMMUNITY.md#built-with-seaorm)
 
 ## License
 

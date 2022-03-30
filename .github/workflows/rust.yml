@@ -293,7 +293,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        path: [basic, actix_example, actix4_example, axum_example, rocket_example, poem_example]
+        path: [basic, actix_example, actix4_example, axum_example, axum-graphql_example, rocket_example, poem_example, jsonrpsee_example]
     steps:
       - uses: actions/checkout@v2
 
@@ -318,7 +318,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        path: [86, 249, 262, 319, 324, 352, 356]
+        path: [86, 249, 262, 319, 324, 352, 356, 471]
     steps:
       - uses: actions/checkout@v2
 
